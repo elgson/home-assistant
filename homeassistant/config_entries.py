@@ -140,56 +140,6 @@ SOURCE_DISCOVERY = 'discovery'
 SOURCE_IMPORT = 'import'
 
 HANDLERS = Registry()
-# Components that have config flows. In future we will auto-generate this list.
-FLOWS = [
-    'ambiclimate',
-    'ambient_station',
-    'axis',
-    'cast',
-    'daikin',
-    'deconz',
-    'dialogflow',
-    'esphome',
-    'emulated_roku',
-    'geofency',
-    'gpslogger',
-    'hangouts',
-    'heos',
-    'homematicip_cloud',
-    'hue',
-    'ifttt',
-    'ios',
-    'ipma',
-    'iqvia',
-    'lifx',
-    'locative',
-    'logi_circle',
-    'luftdaten',
-    'mailgun',
-    'mobile_app',
-    'mqtt',
-    'nest',
-    'openuv',
-    'owntracks',
-    'point',
-    'ps4',
-    'rainmachine',
-    'simplisafe',
-    'smartthings',
-    'smhi',
-    'sonos',
-    'tellduslive',
-    'toon',
-    'tplink',
-    'tradfri',
-    'twilio',
-    'unifi',
-    'upnp',
-    'zha',
-    'zone',
-    'zwave',
-]
-
 
 STORAGE_KEY = 'core.config_entries'
 STORAGE_VERSION = 1
@@ -421,7 +371,8 @@ class ConfigEntry:
         if self.version == handler.VERSION:
             return True
 
-        component = getattr(hass.components, self.domain)
+        integration = await loader.async_get_integration(hass, self.domain)
+        component = integration.get_component()
         supports_migrate = hasattr(component, 'async_migrate_entry')
         if not supports_migrate:
             _LOGGER.error("Migration handler not found for entry %s for %s",
@@ -713,10 +664,10 @@ class ConfigEntries:
             self.hass, self._hass_config, integration)
 
         try:
-            integration.get_component()
+            integration.get_platform('config_flow')
         except ImportError as err:
             _LOGGER.error(
-                'Error occurred while loading integration %s: %s',
+                'Error occurred loading config flow for integration %s: %s',
                 handler_key, err)
             raise data_entry_flow.UnknownHandler
 
