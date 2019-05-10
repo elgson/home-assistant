@@ -380,7 +380,9 @@ class ConfigEntry:
             return False
 
         try:
-            result = await component.async_migrate_entry(hass, self)
+            result = await component.async_migrate_entry(  # type: ignore
+                hass, self
+            )
             if not isinstance(result, bool):
                 _LOGGER.error('%s.async_migrate_entry did not return boolean',
                               self.domain)
@@ -391,7 +393,7 @@ class ConfigEntry:
             return result
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception('Error migrating entry %s for %s',
-                              self.title, component.DOMAIN)
+                              self.title, self.domain)
             return False
 
     def add_update_listener(self, listener: Callable) -> Callable:
