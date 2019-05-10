@@ -6,7 +6,6 @@ from homeassistant.components.http import HomeAssistantView
 from homeassistant.exceptions import Unauthorized
 from homeassistant.helpers.data_entry_flow import (
     FlowManagerIndexView, FlowManagerResourceView)
-from homeassistant.generated.config_flows import FLOWS
 
 
 async def async_setup(hass):

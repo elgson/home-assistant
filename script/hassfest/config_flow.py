@@ -28,7 +28,7 @@ def validate_integration(integration: Integration):
             "be imported without installing requirements.".format(err))
         return
 
-    if not integration.domain in config_entries.HANDLERS:
+    if integration.domain not in config_entries.HANDLERS:
         integration.add_error(
             'config_flow',
             "Importing the config flow platform did not register a config "
