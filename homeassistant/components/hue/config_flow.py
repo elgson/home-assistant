@@ -3,7 +3,6 @@ import asyncio
 import json
 import os
 
-from aiohue.discovery import discover_nupnp
 import async_timeout
 import voluptuous as vol
 
@@ -11,7 +10,6 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
 
-from .bridge import get_bridge
 from .const import DOMAIN, LOGGER
 from .errors import AuthenticationRequired, CannotConnect
 
@@ -58,6 +56,8 @@ class HueFlowHandler(config_entries.ConfigFlow):
 
     async def async_step_init(self, user_input=None):
         """Handle a flow start."""
+        from aiohue.discovery import discover_nupnp
+
         if user_input is not None:
             self.host = user_input['host']
             return await self.async_step_link()
@@ -105,6 +105,8 @@ class HueFlowHandler(config_entries.ConfigFlow):
         Given a configured host, will ask the user to press the link button
         to connect to the bridge.
         """
+        from .bridge import get_bridge
+
         errors = {}
 
         # We will always try linking in case the user has already pressed
@@ -179,6 +181,8 @@ class HueFlowHandler(config_entries.ConfigFlow):
         and create an entry. Otherwise we will delegate to `link` step which
         will ask user to link the bridge.
         """
+        from .bridge import get_bridge
+
         host = import_info['host']
         path = import_info.get('path')
 
